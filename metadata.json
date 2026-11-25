@@ -1,0 +1,6 @@
+{
+  "name": "Braventa",
+  "description": "Official corporate product website for Braventa Fluralaner Tablets, a veterinary pharmaceutical product manufactured in Thailand by VELTRION Animal Health.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
