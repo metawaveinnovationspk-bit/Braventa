@@ -90,14 +90,24 @@ export function EnquirySection({
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      let data: Record<string, any> | null = null;
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        try {
+          data = (await response.json()) as Record<string, any>;
+        } catch {
+          data = null;
+        }
+      }
 
-      if (!response.ok || !data.ok) {
+      if (!response.ok || !data?.ok) {
         if (data?.errors && typeof data.errors === 'object') {
-          setErrors(data.errors);
+          setErrors(data.errors as EnquiryValidationErrors);
         }
         setServerError(
-          data?.message || 'Please check the highlighted fields and try again.',
+          typeof data?.message === 'string'
+            ? data.message
+            : 'Please check the highlighted fields and try again.',
         );
         return;
       }
@@ -201,7 +211,7 @@ export function EnquirySection({
                   <div className="flex items-start gap-2.5 rounded-xl border border-[#075E50]/20 bg-white p-4 text-sm leading-relaxed text-[#123C34]/85">
                     <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#075E50]" aria-hidden="true" />
                     <p>
-                      Your enquiry has been validated and saved on this server under reference{' '}
+                      Your enquiry has been validated under reference{' '}
                       <span className="font-mono font-medium text-[#123C34]">
                         {submissionSuccess.referenceId}
                       </span>
